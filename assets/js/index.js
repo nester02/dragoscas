@@ -1,46 +1,49 @@
-(function () {
-    function initHeader() {
-        var header  = document.getElementById('nxHeader');
-        var burger  = document.getElementById('nxBurger');
-        var mobMenu = document.getElementById('nxMobMenu');
+document.addEventListener('DOMContentLoaded', function () {
+    var header = document.getElementById('dgHeader');
+    var toggle = document.getElementById('dgNavToggle');
+    var sheet = document.getElementById('dgMobileSheet');
+    var overlay = document.getElementById('dgMobileOverlay');
+    var closeBtn = document.getElementById('dgSheetClose');
 
-        if (header) {
-            window.addEventListener('scroll', function () {
-                header.classList.toggle('is-scrolled', window.scrollY > 40);
-            }, { passive: true });
-        }
-
-        function openMenu() {
-            if (!mobMenu || !burger) return;
-            mobMenu.classList.add('is-open');
-            mobMenu.setAttribute('aria-hidden', 'false');
-            burger.classList.add('is-on');
-            burger.setAttribute('aria-expanded', 'true');
-        }
-        function closeMenu() {
-            if (!mobMenu || !burger) return;
-            mobMenu.classList.remove('is-open');
-            mobMenu.setAttribute('aria-hidden', 'true');
-            burger.classList.remove('is-on');
-            burger.setAttribute('aria-expanded', 'false');
-        }
-
-        if (burger && mobMenu) {
-            burger.addEventListener('click', function () {
-                mobMenu.classList.contains('is-open') ? closeMenu() : openMenu();
-            });
-            document.addEventListener('click', function (e) {
-                if (mobMenu.classList.contains('is-open') && header && !header.contains(e.target)) closeMenu();
-            });
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closeMenu();
-            });
-        }
+    if (header) {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 10) {
+                header.classList.add('dg-header--scrolled');
+            } else {
+                header.classList.remove('dg-header--scrolled');
+            }
+        }, { passive: true });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initHeader);
-    } else {
-        initHeader();
+    function openMenu() {
+        sheet.classList.add('dg-mobile-sheet--open');
+        overlay.classList.add('dg-mobile-overlay--visible');
+        document.body.style.overflow = 'hidden';
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
     }
-}());
+
+    function closeMenu() {
+        sheet.classList.remove('dg-mobile-sheet--open');
+        overlay.classList.remove('dg-mobile-overlay--visible');
+        document.body.style.overflow = '';
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    if (toggle) toggle.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (overlay) overlay.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sheet && sheet.classList.contains('dg-mobile-sheet--open')) {
+            closeMenu();
+        }
+    });
+
+    var currentPath = window.location.pathname;
+    var navLinks = document.querySelectorAll('.dg-header__nav-link');
+    navLinks.forEach(function (link) {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        }
+    });
+});

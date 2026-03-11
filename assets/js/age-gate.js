@@ -1,45 +1,59 @@
 (function () {
-    function cookieGet(n) {
-        return document.cookie.split(';').some(function (c) { return c.trim().startsWith(n + '='); });
+    var LS_KEY = 'dg_age_ok';
+    var COOKIE_NAME = 'dg_age_confirmed';
+    var COOKIE_DAYS = 30;
+
+    function setCookie(name, value, days) {
+        var expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) +
+            '; expires=' + expires + '; path=/; SameSite=Lax';
     }
-    function cookieSet(n, v, days) {
-        var d = new Date();
-        d.setTime(d.getTime() + days * 86400000);
-        document.cookie = n + '=' + v + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+
+    function lsGet(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
     }
 
-    function init() {
-        if (cookieGet('nx_age')) return;
+    function lsSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
 
-        var gate   = document.getElementById('nxAgeGate');
-        var veil   = document.getElementById('nxGateVeil');
-        var btnOk  = document.getElementById('nxGateAccept');
-        var btnOut = document.getElementById('nxGateDecline');
-        if (!gate || !veil) return;
+    function showPage() {
+        document.documentElement.style.visibility = '';
+    }
 
-        gate.style.display = '';
-        veil.style.display = '';
-        document.body.classList.add('nx-locked');
+    function openGate() {
+        var gate    = document.getElementById('dgAgeGate');
+        var overlay = document.getElementById('dgAgeOverlay');
+        if (!gate || !overlay) { showPage(); return; }
 
-        if (btnOk) {
-            btnOk.addEventListener('click', function () {
-                cookieSet('nx_age', '1', 30);
-                gate.style.display = 'none';
-                veil.style.display = 'none';
-                document.body.classList.remove('nx-locked');
-                document.dispatchEvent(new Event('nx_age_accepted'));
-            });
-        }
-        if (btnOut) {
-            btnOut.addEventListener('click', function () {
-                window.location.href = '/acces-refuse/';
-            });
-        }
+        gate.classList.add('dg-agegate--visible');
+        overlay.classList.add('dg-agegate__overlay--visible');
+        document.body.style.overflow = 'hidden';
+
+        showPage();
+
+        document.getElementById('dgAgeAccept') && document.getElementById('dgAgeAccept').addEventListener('click', function () {
+            lsSet(LS_KEY, '1');
+            setCookie(COOKIE_NAME, '1', COOKIE_DAYS);
+            gate.classList.remove('dg-agegate--visible');
+            overlay.classList.remove('dg-agegate__overlay--visible');
+            document.body.style.overflow = '';
+        });
+
+        document.getElementById('dgAgeDecline') && document.getElementById('dgAgeDecline').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = '/mineur/';
+        });
+    }
+
+    if (lsGet(LS_KEY) === '1') {
+        showPage();
+        return;
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', openGate);
     } else {
-        init();
+        openGate();
     }
-}());
+})();

@@ -1,120 +1,108 @@
-<?php
-$uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-$nav = [
-    ['href' => '/',                'label' => 'Bookmakers'],
-    ['href' => '/securite-du-jeu', 'label' => 'S&eacute;curit&eacute; du jeu'],
-    ['href' => '/notre-editorial',        'label' => 'Notre &eacute;ditorial'],
-    ['href' => '/nous-ecrire',         'label' => 'Nous &eacute;crire'],
-];
-?>
-<div class="nx-gate__veil" id="nxGateVeil" aria-hidden="true" style="display:none"></div>
-<div class="nx-gate" id="nxAgeGate" role="dialog" aria-modal="true" aria-labelledby="nxGateTitle" style="display:none">
-    <div class="nx-gate__box">
-        <img src="/assets/images/age-18plus.webp" alt="" class="nx-gate__img" width="250" height="250" aria-hidden="true">
-        <h2 class="nx-gate__title" id="nxGateTitle">Confirmation d'âge requise</h2>
-        <p class="nx-gate__body">L'accès à ce site est strictement réservé aux personnes âgées de 18 ans et plus. En continuant, vous confirmez avoir l'âge légal requis dans votre pays de résidence. Les jeux d'argent comportent des risques de dépendance. Jouez de manière responsable. Pour obtenir de l'aide&#160;: <a href="https://joueurs-info-service.fr" rel="nofollow noopener" target="_blank" class="nx-gate__ref">joueurs-info-service.fr</a></p>
-        <div class="nx-gate__row">
-            <button class="nx-btn nx-btn--cta nx-btn--full nx-btn--lg" id="nxGateAccept">J'ai 18 ans ou plus — Continuer</button>
-            <button class="nx-btn nx-btn--outline nx-btn--full" id="nxGateDecline">Quitter le site</button>
+<div id="dgAgeGate" class="dg-agegate" role="dialog" aria-modal="true" aria-labelledby="dgAgeGateTitle">
+    <div class="dg-agegate__box">
+        <img src="/assets/logos/dragoscas.webp" alt="Dragoscas" class="dg-agegate__logo">
+        <h2 id="dgAgeGateTitle" class="dg-agegate__title">Confirmation d'âge requise</h2>
+        <p class="dg-agegate__text">L'accès à ce site est strictement réservé aux personnes âgées de 18 ans et plus. En continuant, vous confirmez avoir l'âge légal requis dans votre pays de résidence. Les jeux d'argent comportent des risques de dépendance. Jouez de manière responsable. Pour obtenir de l'aide&nbsp;: <a href="https://www.joueurs-info-service.fr" rel="nofollow noreferrer" target="_blank">joueurs-info-service.fr</a></p>
+        <div class="dg-agegate__actions">
+            <button id="dgAgeAccept" class="dg-btn dg-btn--accent dg-btn--cta dg-btn--full">J'ai 18 ans ou plus — Continuer</button>
+            <a href="/mineur/" id="dgAgeDecline" class="dg-btn dg-btn--outline dg-btn--full">Quitter le site</a>
+        </div>
+    </div>
+</div>
+<div id="dgAgeOverlay" class="dg-agegate__overlay"></div>
+
+<div id="dgCookieBanner" class="dg-cookie" role="dialog" aria-labelledby="dgCookieTitle">
+    <div class="dg-cookie__inner">
+        <p id="dgCookieTitle" class="dg-cookie__text">Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre <a href="/confidentialite-rgpd/" rel="nofollow noreferrer">politique de confidentialité</a>.</p>
+        <div class="dg-cookie__actions">
+            <button id="dgCookieAccept" class="dg-btn dg-btn--accent dg-btn--sm">Accepter</button>
+            <button id="dgCookieDecline" class="dg-btn dg-btn--outline dg-btn--sm">Refuser</button>
         </div>
     </div>
 </div>
 
-<header class="nx-hdr" id="nxHeader">
+<div id="dgMobileOverlay" class="dg-mobile-overlay"></div>
 
-    <div class="nx-hdr__shell">
-        <div class="nx-wrap">
-            <nav class="nx-hdr__nav" aria-label="Navigation principale">
+<div id="dgMobileSheet" class="dg-mobile-sheet" role="dialog" aria-modal="true" aria-label="Menu de navigation">
+    <div class="dg-mobile-sheet__head">
+        <a href="/" class="dg-mobile-sheet__logo">
+            <img src="/assets/logos/dragoscas.webp" alt="Dragoscas" class="dg-mobile-sheet__logo-img">
+        </a>
+        <button id="dgSheetClose" class="dg-mobile-sheet__close" aria-label="Fermer le menu">
+            <img src="/assets/icons/x.svg" alt="" class="dg-ico dg-ico--md dg-ico--brand">
+        </button>
+    </div>
+    <p class="dg-mobile-sheet__meta">France &nbsp;·&nbsp; 18+ &nbsp;·&nbsp; Guide indépendant</p>
+    <nav class="dg-mobile-sheet__nav" aria-label="Navigation mobile">
+        <a href="/" class="dg-mobile-sheet__link dg-mobile-sheet__link--main">
+            <span class="dg-mobile-sheet__link-inner">
+                <span class="dg-mobile-sheet__link-title">Bookmakers</span>
+                <span class="dg-mobile-sheet__link-sub">Classement &amp; bonus ANJ</span>
+            </span>
+            <img src="/assets/icons/chevron-right.svg" alt="" class="dg-ico dg-ico--sm dg-ico--brand">
+        </a>
+        <a href="/guide-jeu-responsable/" class="dg-mobile-sheet__link">
+            <span class="dg-mobile-sheet__link-inner">
+                <span class="dg-mobile-sheet__link-title">Jeu Responsable ANJ</span>
+                <span class="dg-mobile-sheet__link-sub">Ressources &amp; aide</span>
+            </span>
+            <img src="/assets/icons/chevron-right.svg" alt="" class="dg-ico dg-ico--sm dg-ico--brand">
+        </a>
+        <a href="/equipe-editoriale/" class="dg-mobile-sheet__link">
+            <span class="dg-mobile-sheet__link-inner">
+                <span class="dg-mobile-sheet__link-title">Équipe Éditoriale</span>
+                <span class="dg-mobile-sheet__link-sub">Notre méthodologie</span>
+            </span>
+            <img src="/assets/icons/chevron-right.svg" alt="" class="dg-ico dg-ico--sm dg-ico--brand">
+        </a>
+        <a href="/nous-contacter/" class="dg-mobile-sheet__link">
+            <span class="dg-mobile-sheet__link-inner">
+                <span class="dg-mobile-sheet__link-title">Nous Contacter</span>
+                <span class="dg-mobile-sheet__link-sub">Nous écrire</span>
+            </span>
+            <img src="/assets/icons/chevron-right.svg" alt="" class="dg-ico dg-ico--sm dg-ico--brand">
+        </a>
+    </nav>
+    <div class="dg-mobile-sheet__help">
+        <p class="dg-mobile-sheet__help-label">Aide confidentielle &amp; gratuite</p>
+        <a href="https://www.joueurs-info-service.fr" rel="nofollow noreferrer" target="_blank" class="dg-mobile-sheet__help-link">joueurs-info-service.fr</a>
+        <a href="tel:0974751313" class="dg-mobile-sheet__help-phone">09-74-75-13-13</a>
+    </div>
+</div>
 
-                <a href="/" class="nx-hdr__logo" aria-label="Novorexas — retour à l'accueil">
-                    <img src="/assets/logos/novorexas.webp" alt="Novorexas" class="nx-hdr__logo-img" width="360" height="116">
-                </a>
-
-                <ul class="nx-hdr__menu" role="list">
-                    <?php foreach ($nav as $item):
-                        $active = (rtrim($item['href'], '/') === $uri);
-                        ?>
-                        <li class="nx-hdr__item">
-                            <a href="<?= $item['href'] ?>"
-                               class="nx-hdr__link<?= $active ? ' nx-hdr__link--on' : '' ?>"
-                                <?= $active ? 'aria-current="page"' : '' ?>>
-                                <?= $item['label'] ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
+<header id="dgHeader" class="dg-header">
+    <div class="dg-header__bar">
+        <div class="dg-wrap dg-header__bar-inner">
+            <span class="dg-header__bar-msg">Destiné uniquement aux personnes majeures de 18 ans et plus. Jouez toujours de façon responsable.</span>
+            <span class="dg-header__bar-dot" aria-hidden="true"></span>
+            <a href="https://www.joueurs-info-service.fr" rel="nofollow noreferrer" target="_blank" class="dg-header__bar-link">joueurs-info-service.fr</a>
+            <span class="dg-header__bar-dot" aria-hidden="true"></span>
+            <span class="dg-header__bar-phone"><a href="tel:0974751313">09-74-75-13-13</a> <span class="dg-header__bar-note">— Appel non surtaxé</span></span>
+        </div>
+    </div>
+    <div class="dg-header__main">
+        <div class="dg-wrap dg-header__main-inner">
+            <a href="/" class="dg-header__brand" aria-label="Dragoscas — Accueil">
+                <img src="/assets/logos/dragoscas.webp" alt="Dragoscas" class="dg-header__brand-logo">
+                <span class="dg-header__brand-badge">ANJ&nbsp;·&nbsp;18+</span>
+            </a>
+            <nav class="dg-header__nav" aria-label="Navigation principale">
+                <ul class="dg-header__nav-list">
+                    <li><a href="/" class="dg-header__nav-link dg-header__nav-link--primary">Bookmakers</a></li>
+                    <li><a href="/guide-jeu-responsable/" class="dg-header__nav-link">Jeu Responsable ANJ</a></li>
+                    <li><a href="/equipe-editoriale/" class="dg-header__nav-link">Équipe Éditoriale</a></li>
+                    <li><a href="/nous-contacter/" class="dg-header__nav-link">Nous Contacter</a></li>
                 </ul>
-
-                <div class="nx-hdr__chip">
-                    <svg class="nx-ico nx-ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                    <span class="nx-hdr__chip-txt">Guide ANJ</span>
-                </div>
-
-                <button class="nx-hdr__burger"
-                        id="nxBurger"
-                        type="button"
-                        aria-label="Ouvrir le menu"
-                        aria-expanded="false"
-                        aria-controls="nxMobMenu">
-                    <span class="nx-burger-lines" aria-hidden="true">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-                    <span class="nx-burger-x" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </span>
-                </button>
-
             </nav>
-        </div>
-    </div>
-
-    <div class="nx-hdr__bar">
-        <div class="nx-wrap nx-hdr__bar-row">
-            <div class="nx-hdr__bar-seg nx-hdr__bar-seg--end">
-                <a href="https://joueurs-info-service.fr" rel="nofollow noopener" target="_blank" class="nx-hdr__bar-link">joueurs-info-service.fr</a>
-                <span class="nx-hdr__bar-sep" aria-hidden="true"></span>
-                <span class="nx-hdr__bar-txt">09&#8209;74&#8209;75&#8209;13&#8209;13</span>
-                <span class="nx-hdr__bar-note">Appel non surtaxé</span>
-            </div>
-            <div class="nx-hdr__bar-seg nx-hdr__bar-seg--mid">
-                <span class="nx-hdr__bar-txt">Jouez toujours de façon responsable.</span>
-            </div>
-            <div class="nx-hdr__bar-seg">
-                <img src="/assets/images/age-18plus.webp" alt="18+" class="nx-hdr__bar-ico" width="250" height="250">
-                <span class="nx-hdr__bar-txt">Destiné uniquement aux personnes majeures de 18 ans et plus.</span>
+            <div class="dg-header__end">
+                <span class="dg-header__chip">
+                    <img src="/assets/icons/shield-check.svg" alt="" class="dg-ico dg-ico--xs dg-ico--brand">
+                    <span>Guide indépendant</span>
+                </span>
+                <button id="dgNavToggle" class="dg-header__burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="dgMobileSheet">
+                    <img src="/assets/icons/menu.svg" alt="" class="dg-ico dg-ico--md dg-ico--brand" id="dgBurgerIcon">
+                </button>
             </div>
         </div>
     </div>
-
-    <div class="nx-mob" id="nxMobMenu" aria-hidden="true">
-        <div class="nx-mob__inner">
-            <ul class="nx-mob__list" role="list">
-                <?php foreach ($nav as $item):
-                    $active = (rtrim($item['href'], '/') === $uri);
-                    ?>
-                    <li>
-                        <a href="<?= $item['href'] ?>"
-                           class="nx-mob__link<?= $active ? ' nx-mob__link--on' : '' ?>"
-                            <?= $active ? 'aria-current="page"' : '' ?>>
-                            <?= $item['label'] ?>
-                            <svg class="nx-mob__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <div class="nx-mob__legal">
-                <div class="nx-mob__legal-row">
-                    <img src="/assets/images/age-18plus.webp" alt="18+" class="nx-mob__legal-ico" width="250" height="250">
-                    <span>Réservé aux personnes de 18 ans et plus</span>
-                </div>
-                <div class="nx-mob__legal-links">
-                    <a href="https://joueurs-info-service.fr" rel="nofollow noopener" target="_blank" class="nx-mob__ref">joueurs-info-service.fr</a>
-                    <span class="nx-mob__legal-sep" aria-hidden="true"></span>
-                    <a href="tel:0974751313" class="nx-mob__tel">09 74 75 13 13</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </header>

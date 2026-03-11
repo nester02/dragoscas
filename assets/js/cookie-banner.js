@@ -1,56 +1,27 @@
-(function () {
-    function cookieGet(n) {
-        return document.cookie.split(';').some(function (c) { return c.trim().startsWith(n + '='); });
-    }
-    function cookieSet(n, v, days) {
-        var d = new Date();
-        d.setTime(d.getTime() + days * 86400000);
-        document.cookie = n + '=' + v + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    var banner = document.getElementById('dgCookieBanner');
+    var btnAccept = document.getElementById('dgCookieAccept');
+    var btnDecline = document.getElementById('dgCookieDecline');
 
-    function buildBanner() {
-        var el = document.createElement('div');
-        el.className = 'nx-cookie';
-        el.id = 'nxCookieBanner';
-        el.setAttribute('role', 'dialog');
-        el.setAttribute('aria-label', 'Consentement aux cookies');
-        el.innerHTML =
-            '<p class="nx-cookie__txt">Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre <a href="/politique-de-confidentialite/" class="nx-cookie__link">politique de confidentialité</a>.</p>' +
-            '<div class="nx-cookie__row">' +
-            '<button class="nx-btn nx-btn--outline nx-btn--sm" id="nxCookieDecline">Refuser</button>' +
-            '<button class="nx-btn nx-btn--primary nx-btn--sm" id="nxCookieAccept">Accepter</button>' +
-            '</div>';
-        document.body.appendChild(el);
-
-        setTimeout(function () { el.classList.add('is-visible'); }, 80);
-
-        function hide() {
-            el.classList.remove('is-visible');
-            el.addEventListener('transitionend', function () { el.remove(); }, { once: true });
-        }
-
-        document.getElementById('nxCookieAccept').addEventListener('click', function () {
-            cookieSet('nx_cookie', 'accepted', 365);
-            hide();
-        });
-        document.getElementById('nxCookieDecline').addEventListener('click', function () {
-            cookieSet('nx_cookie', 'declined', 180);
-            hide();
-        });
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
     }
 
-    function init() {
-        if (cookieGet('nx_cookie')) return;
-        if (cookieGet('nx_age')) {
-            buildBanner();
-        } else {
-            document.addEventListener('nx_age_accepted', buildBanner, { once: true });
-        }
+    function setCookie(name, value, days) {
+        var expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    if (!getCookie('dc_cookie_consent') && banner) {
+        banner.classList.add('dg-cookie--visible');
     }
-}());
+
+    function dismissBanner(value) {
+        setCookie('dc_cookie_consent', value, 180);
+        if (banner) banner.classList.remove('dg-cookie--visible');
+    }
+
+    if (btnAccept) btnAccept.addEventListener('click', function () { dismissBanner('accepted'); });
+    if (btnDecline) btnDecline.addEventListener('click', function () { dismissBanner('declined'); });
+});
